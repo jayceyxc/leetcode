@@ -1,5 +1,7 @@
 package com.linus.medium.delete_node_in_bst;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -78,6 +80,39 @@ public class Solution {
         }
     }
 
+    public void traverseBinaryTreeInOrder(TreeNode root, List<Integer> result) {
+        if (root != null) {
+            if (root.left != null) {
+                traverseBinaryTreeInOrder(root.left, result);
+            }
+            result.add(root.val);
+            if (root.right != null) {
+                traverseBinaryTreeInOrder(root.right, result);
+            }
+        }
+    }
+
+    public List<Integer> traverseBinaryTreeByLevel(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> leafNodeQueue = new LinkedBlockingQueue<>();
+        if (root == null) {
+            return result;
+        }
+        leafNodeQueue.add(root);
+        while (!leafNodeQueue.isEmpty()) {
+            TreeNode tempNode = leafNodeQueue.poll();
+            result.add(tempNode.val);
+            if (tempNode.left != null) {
+                leafNodeQueue.add(tempNode.left);
+            }
+            if (tempNode.right != null) {
+                leafNodeQueue.add(tempNode.right);
+            }
+        }
+
+        return result;
+    }
+
     public TreeNode generateBinaryTreeInOrder(Integer []values) {
         if (values == null || values.length == 0) {
             return null;
@@ -153,11 +188,16 @@ public class Solution {
         Solution solution = new Solution();
 
         Integer[] values = {5, 3, 6, 2, 4, null, 7, 1, null, null, null, null, 8};
+        List<Integer> result = new ArrayList<>();
         TreeNode root = solution.generateBinaryTreeInOrder(values);
 
         TreeNode newRoot = solution.deleteNode(root, 3);
         solution.displayInOrder(newRoot);
-        System.out.println();
+        solution.traverseBinaryTreeInOrder(newRoot, result);
+        System.out.println(result);
+        result.clear();
+        List<Integer> levelResult = solution.traverseBinaryTreeByLevel(newRoot);
+        System.out.println(levelResult);
 
         root = solution.generateBinaryTreeInOrder(values);
         newRoot = solution.deleteNode(root, 7);
@@ -196,11 +236,15 @@ public class Solution {
         newRoot = solution.deleteNode(root, 3);
         solution.displayInOrder(newRoot);
         System.out.println();
+        levelResult = solution.traverseBinaryTreeByLevel(newRoot);
+        System.out.println(levelResult);
 
         values = new Integer[]{40,38,46,6,39,43,48,3,8,null,null,42,44,47,49,0,5,7,34,41,null,null,45,null,null,null,null,null,1,4,null,null,null,32,37,null,null,null,null,null,2,null,null,16,33,35,null,null,null,11,27,null,null,null,36,10,15,20,31,null,null,9,null,13,null,17,23,29,null,null,null,12,14,null,18,22,26,28,30,null,null,null,null,null,19,21,null,24,null,null,null,null,null,null,null,null,null,null,25};
         root = solution.generateBinaryTreeInOrder(values);
         newRoot = solution.deleteNode(root, 40);
         solution.displayInOrder(newRoot);
+        solution.traverseBinaryTreeInOrder(newRoot, result);
+        System.out.println(result);
         System.out.println();
 
         values = new Integer[]{5,3,6,2,4,null,7};
