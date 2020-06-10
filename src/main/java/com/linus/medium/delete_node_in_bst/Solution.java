@@ -1,8 +1,5 @@
 package com.linus.medium.delete_node_in_bst;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,77 +31,38 @@ public class Solution {
     private static final int NEXT_LEFT = 0;
     private static final int NEXT_RIGHT = 1;
 
+    /**
+     * 使用递归的方式删除节点
+     * @param root
+     * @param key
+     * @return
+     */
     public TreeNode deleteNode(TreeNode root, int key) {
-        TreeNode deleteNode = root;
-        TreeNode prevNode = root;
-        // deleteNode是否为prevNode的左子树
-        boolean isLeft = true;
-        while (true) {
-            if (deleteNode != null) {
-                if (deleteNode.val == key) {
-                    if (deleteNode.left == null && deleteNode.right == null) {
-                        if (deleteNode == root) {
-                            root = null;
-                        } else {
-                            if (isLeft) {
-                                prevNode.left = null;
-                            } else {
-                                prevNode.right = null;
-                            }
-                        }
-                    } else if (deleteNode.left == null) {
-                        if (deleteNode == root) {
-                            root = root.right;
-                        } else {
-                            if (isLeft) {
-                                prevNode.left = deleteNode.right;
-                            } else {
-                                prevNode.right = deleteNode.right;
-                            }
-                        }
-                    } else if (deleteNode.right == null) {
-                        if (deleteNode == root) {
-                            root = root.left;
-                        } else {
-                            if (isLeft) {
-                                prevNode.left = deleteNode.left;
-                            } else {
-                                prevNode.right = deleteNode.left;
-                            }
-                        }
-                    } else {
-                        TreeNode tempRoot = deleteNode.right;
-                        while (tempRoot.left != null) {
-                            tempRoot = tempRoot.left;
-                        }
-                        tempRoot.left = deleteNode.left;
-                        if (deleteNode == root) {
-                            root.right = tempRoot.right;
-                            tempRoot.right = root.right;
-                            root = tempRoot;
-                        } else {
-                            if (isLeft) {
-                                prevNode.left = deleteNode.right;
-                            } else {
-                                prevNode.right = deleteNode.right;
-                            }
-                        }
-                    }
-                    break;
-                } else if (deleteNode.val > key) {
-                    prevNode = deleteNode;
-                    deleteNode = deleteNode.left;
-                    isLeft = true;
-                } else {
-                    prevNode = deleteNode;
-                    deleteNode = deleteNode.right;
-                    isLeft = false;
-                }
+        if (root == null) {
+            return null;
+        }
+        if (root.val > key) {
+            root.left = deleteNode(root.left, key);
+        } else if (root.val < key) {
+            root.right = deleteNode(root.right, key);
+        } else {
+            if (root.right == null) {
+                return root.left;
+            } else if (root.left == null) {
+                return root.right;
             } else {
-                break;
+                // 去到删除节点的右子树，找到值最小的节点
+                TreeNode tempRoot = root.right;
+                while (tempRoot.left != null) {
+                    tempRoot = tempRoot.left;
+                }
+                // 将删除节点的左子树全部移到这个节点下
+                tempRoot.left = root.left;
+
+                // 返回右子树的根节点，放到当前删除节点的位置
+                return root.right;
             }
         }
-
         return root;
     }
 
@@ -236,6 +194,18 @@ public class Solution {
         values = new Integer[]{5, 3, 6, 2, 4, null, 7};
         root = solution.generateBinaryTreeInOrder(values);
         newRoot = solution.deleteNode(root, 3);
+        solution.displayInOrder(newRoot);
+        System.out.println();
+
+        values = new Integer[]{40,38,46,6,39,43,48,3,8,null,null,42,44,47,49,0,5,7,34,41,null,null,45,null,null,null,null,null,1,4,null,null,null,32,37,null,null,null,null,null,2,null,null,16,33,35,null,null,null,11,27,null,null,null,36,10,15,20,31,null,null,9,null,13,null,17,23,29,null,null,null,12,14,null,18,22,26,28,30,null,null,null,null,null,19,21,null,24,null,null,null,null,null,null,null,null,null,null,25};
+        root = solution.generateBinaryTreeInOrder(values);
+        newRoot = solution.deleteNode(root, 40);
+        solution.displayInOrder(newRoot);
+        System.out.println();
+
+        values = new Integer[]{5,3,6,2,4,null,7};
+        root = solution.generateBinaryTreeInOrder(values);
+        newRoot = solution.deleteNode(root, 0);
         solution.displayInOrder(newRoot);
         System.out.println();
     }
